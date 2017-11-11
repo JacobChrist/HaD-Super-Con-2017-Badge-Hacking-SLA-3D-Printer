@@ -25,6 +25,8 @@
 
 #define s_slice 17
 #define s_slice_wait 18
+#define s_slice_start 19
+#define s_slice_start_wait 20
 
 
 char* sla_printer(unsigned int action) {
@@ -34,6 +36,7 @@ char* sla_printer(unsigned int action) {
     static unsigned int brscroll, brsel, brlast, brnfiles, brendflag, showtime, showtimer, shown;
 
     static unsigned int slice = 0;
+    static unsigned int slice_timer = 0;
     
     static char brname[15];
     static unsigned int brattrs, brlen, brtime, brtype;
@@ -53,20 +56,32 @@ char* sla_printer(unsigned int action) {
 #endif
     switch (brstate) {
 
+        case s_slice_start:
+          printf(cls red "\n\n\n\n\n" whi);
+          printf(red "** PRESS BUTTON 1 **\n" whi);
+          printf(red "** TO START PRINT **\n" whi);
+          brstate = s_slice_start_wait;
+          break;
+
+        case s_slice_start_wait:
+          if (!butpress) break;
+          if (butpress & (powerbut)) {
+              brstate = s_quitbrowse;
+              break;
+          } // exit
+
+          if (butpress & (but1)) { // but3 is the go button.
+              printf(cls);
+              brstate = s_slice;
+              break;
+          }
+
+          break;
+
         case s_slice:
           sprintf(brname, "jolly%d.bmp", slice);
           slice +=9;
           if( slice > 180 ) slice = 0;
-//          switch(slice) {
-//            case 0:
-//              strcpy(brname, "jolly0.bmp");
-//              slice++;
-//              break;
-//            default:
-//              strcpy(brname, "jolly45.bmp");
-//              slice = 0;
-//              break;
-//          }
           // load the slice
           //printf(cls);
           //printf(cls inv "%s" inv del, brname);
@@ -83,6 +98,14 @@ char* sla_printer(unsigned int action) {
           break;
             
         case s_slice_wait:
+            if(!tick) return(0);
+            //if(!tick) 
+            slice_timer++;
+            if( slice_timer > 100) {
+                brstate = s_slice;
+                slice_timer = 0;
+            }
+
             if (!butpress) break;
               if (butpress & (powerbut)) {
                   brstate = s_quitbrowse;
@@ -93,13 +116,14 @@ char* sla_printer(unsigned int action) {
                 brstate = s_slice;
                 break;
             }
+            
             break;
             
         case s_startbrowse:
             FSchdir("\\JACOB\\");
             brendflag = 0;
             slice = 0;
-            brstate = s_slice;
+            brstate = s_slice_start;
             break;
             
         case s_newdir:
