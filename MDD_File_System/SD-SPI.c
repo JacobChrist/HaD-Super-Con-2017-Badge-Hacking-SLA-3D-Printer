@@ -68,8 +68,8 @@
 
 
 
-#include "..\cambadge.h"
-#include "..\globals.h"
+#include "../cambadge.h"
+#include "../globals.h"
 #include "GenericTypeDefs.h"
 #include "HardwareProfile.h"
 #include "FSIO.h"

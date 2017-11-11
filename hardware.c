@@ -210,7 +210,8 @@ void cam_enable(unsigned int mode) {//initialise & enable camera, Data will be a
 
     cam_grabdisable(); // stop any current grabbing
     REFOCON = 0b1001001000000000 | refclkdiv << 16; // fast while setting up regs - underclocking messes up I2C, causing bus jam
-
+    T3CON = 0b1000000000000010; //external clock. PR values get set up in vertical sync int
+    
     cammode = mode; // global current-mode value
     if (cammode == 0) {//disable
         cam_setreg(0x09, 0x10); // soft standby
@@ -313,6 +314,29 @@ int randnum(int min, int max) { // return signed random number between ranges
     return (rand() % (max - min) + min);
 }
 //========================================================================= inithardware
+void claimadc(unsigned char claim)
+{
+ 
+    if(claim) adcclaimed=1; 
+    else {
+    IEC0CLR = _IEC0_AD1IE_MASK;
+    
+            // ADC  - battery measure
+    // fedcba9876543210
+    AD1CON1=0;
+    AD1CON1 = 0b1000000011100000; //auto convert after sampling time, FRC clock
+    AD1CON2 = 0;
+    //           sssss
+    AD1CON3 = 0b1000100000000000; // sample time.
+    AD1CSSL=0;
+    adcclaimed=0;
+    
+    }
+    
+}
+
+
+
 
 void inithardware(void) {// note hardware may not be in reset state as some stuff gets initialised by bootloader
     unsigned int i;
@@ -361,13 +385,9 @@ void inithardware(void) {// note hardware may not be in reset state as some stuf
     butts_out;
 
     led1_off;
+    claimadc(0);
+    
 
-    // ADC  - battery measure
-    // fedcba9876543210
-    AD1CON1 = 0b1000000011100000; //auto convert after sampling time, FRC clock
-    AD1CON2 = 0;
-    //           sssss
-    AD1CON3 = 0b1000100000000000; // sample time.
 
     // Timer 1 - used for do_delay/delayus() for general purpose delays
     T1CON = 0b1000000000000000; // timer on, no prescale
@@ -375,6 +395,7 @@ void inithardware(void) {// note hardware may not be in reset state as some stuf
     // T3 pixel clock divider to trigger DMA transfer of camera data
     T3CON = 0b1000000000000010; //external clock. PR values get set up in vertical sync int
     iosetup_cam;
+    
     //T2 frame interval timer used by browser and camera
     T2CON = 0b1000000001110000; // prescale 256
     // T4 system tick timer
@@ -459,7 +480,7 @@ void inithardware(void) {// note hardware may not be in reset state as some stuf
 void readbatt(void) {
     unsigned int i, r;
     static unsigned int battave = 0, startcount = 0;
-    ;
+    if(adcclaimed) {battlevel=4000;return;}
 
     // measure battery voltage
     __builtin_disable_interrupts(); // prevent powercon-off time being extended. Only for about 3.5uS so shouldn't break anything

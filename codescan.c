@@ -1,7 +1,7 @@
 
 #include "cambadge.h"
 #include "globals.h"
-
+ 
 //code 128 barcode reader
 // Mike Harrison 15 Oct 2017
 // reads Code 128 barcodes. Codes need to be approx 1 inch per symbol wide
@@ -10,7 +10,7 @@
 // table of code-128 symbols, 2 bits per symbol, 0 = length 4, ls first
 
 #define debuglist 0 // <>0 to output pixel line data and show baseline etc. to optimise slicing
-
+ 
 const unsigned short codetable[108] = {
     0x9AA, 0xA9A, 0xAA9, 0x66B, 0x67A, 0x76A, 0x6A7, 0x6B6, 0x7A6, 0xA67, 0xA76, 0xB66, 0x5AE, 0x69E, 0x6AD, 0x5EA, 0x6DA,
     0x6E9, 0xAE5, 0xA5E, 0xA6D, 0x9E6, 0xAD6, 0xD9D, 0xD6A, 0xE5A, 0xE69, 0xDA6, 0xE96, 0xEA5, 0x99B, 0x9B9, 0xB99, 0x57B,

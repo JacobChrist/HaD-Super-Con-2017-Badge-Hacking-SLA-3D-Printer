@@ -3,11 +3,12 @@
 #include "pindefs.h" // IO pin defs and access macros
 #include "appmap.h" // main menu configuration
 #include "MDD_File_System/FSIO.h"
+#include <sys/attribs.h> // Interrupt vector constants 
 
 //=========================================================== 
 // debug and high-level tweak options
-#define version "BADGE 0.23"
-#define versionbyte 0x23 // returned by serial command
+#define version "BADGE 1.03"
+#define versionbyte 103 // returned by serial command
 
 
 #define uart1_enable 1 // ==1 to set up UART1 and set pins for UART mode
@@ -22,7 +23,7 @@
 #define powerbuttime 100 // length of power button press before powerdown, ticks
 #define reptime 25 // key auto repeat delay, 20ms ticks
 #define reprate 4 // auto repeat rate
-#define butcol cya // button legend colour
+#define butcol yel // button legend colour cya
 #define batthresh1 2800 // yellow bat thresh, mV
 #define batthresh2 2200 // red bat thresh, mV
 
@@ -191,12 +192,13 @@ const char* camnames[ncammodes] = {"", "128x96 x1 RGB", "128x96 x2 RGB", "128x96
 
 #define charwidth 6
 #define charheight 8
-#define vspace 10 // chanracter vertical spacing
+#define vspace 10 // character vertical spacing
 
 
 // Control character strings for display 
 #define del "\x02" // 500mS delay
 #define hspace "\x03" // half space
+#define bspace "\x04" // 2 pixel backspace
 #define inv "\x07" // swap fg/bg colours
 #define cls "\x0c" // clear screen
 #define lf "\x0a" // CR and LF
@@ -205,6 +207,7 @@ const char* camnames[ncammodes] = {"", "128x96 x1 RGB", "128x96 x2 RGB", "128x96
 
 //special display characters
 // add more below 0x18 and update startchar in font6x8.inc
+#define shortdot "\x1e\x04" 
 
 #define uarr "\x18" // arrows
 #define darr "\x19"
@@ -252,7 +255,7 @@ const char* camnames[ncammodes] = {"", "128x96 x1 RGB", "128x96 x2 RGB", "128x96
 #define bot "\x80\xac"
 #define top "\x80\xa0"
 
-// colours b0..2 = foreground, b5..4 = background
+// colours b0..2 = foreground, b5..3 = background
 #define red "\xc1"
 #define grn "\xc2"
 #define yel "\xc3"
@@ -263,6 +266,7 @@ const char* camnames[ncammodes] = {"", "128x96 x1 RGB", "128x96 x2 RGB", "128x96
 #define bgred "\xcf"
 #define bggrn "\xd7"
 #define bgblu "\xe7"
+
 
 #define whiinv "\xF8"
 

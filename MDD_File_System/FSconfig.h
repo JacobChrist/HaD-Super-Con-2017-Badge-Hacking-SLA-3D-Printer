@@ -109,7 +109,7 @@
 //              generate timestamp information for files from the RTCC module. The user
 //              must enable and configure the RTCC module before creating or modifying
 //              files.                                                                 
-#define USEREALTIMECLOCK
+//#define USEREALTIMECLOCK
 
 // Summary: A macro to enable manual timestamp generation
 // Description: The USERDEFINEDCLOCK macro will allow the user to manually set
@@ -123,7 +123,7 @@
 //              static value and increment it when a file is updated. This timestamp
 //              generation method should only be used in applications where file times
 //              are not necessary.                                                    
-//#define INCREMENTTIMESTAMP
+#define INCREMENTTIMESTAMP
 
 
 

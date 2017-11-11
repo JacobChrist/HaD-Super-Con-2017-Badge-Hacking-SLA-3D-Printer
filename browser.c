@@ -31,6 +31,7 @@ char* browser(unsigned int action) {
 
     static char brname[15];
     static unsigned int brattrs, brlen, brtime, brtype;
+    static unsigned char shownames,showinfo;
 
     if (action == act_name) return ("BROWSER");
     else if (action == act_help) return ("Displays files on\nSD Card");
@@ -227,8 +228,8 @@ char* browser(unsigned int action) {
                     TMR2 = 0;
                     IFS0SET = _IFS0_T2IF_MASK; // force first
                     brstate = s_aviplaying;
-                    printf(bot butcol "Pause    Delete  Back");
-
+                    printf(bot butcol "Pause    Delete  Back" top tabx18 "Off");
+                    showinfo=1;
                     if (avi_height > 96) delayus(300000); // display prompt before overwritten by image 
                     break;
 
@@ -298,7 +299,7 @@ char* browser(unsigned int action) {
                 printf(bot butcol inv "Pause" inv);
                 break;
             }
-
+            if(butpress & but4) {showinfo^=1;printf(cls); break;}
             if (butpress) {
                 FSfclose(fptr);
                 brstate = s_restartbrowse;
@@ -308,7 +309,7 @@ char* browser(unsigned int action) {
             IFS0CLR = _IFS0_T2IF_MASK;
 
             i = showavi();
-            if (avi_height <= 96) printf(top yel "%4d/%-4d %4ds", avi_framenum, avi_frames, avi_framenum * avi_frametime / 1000000);
+            if (avi_height <= 96) if(showinfo)  printf(top yel "%4d/%-4d %4ds", avi_framenum, avi_frames, avi_framenum * avi_frametime / 1000000);
             if (i) {
                 FSfclose(fptr);
                 printf(cls red "Play Error %s" whi);
@@ -334,8 +335,9 @@ char* browser(unsigned int action) {
 
             showtime = 2000000 / ticktime;
             showtimer = showtime;
-            printf(cls butcol "EXIT" bot "Slower   Faster  Next" tabx0 taby3 whi "BMP Slideshow" del del);
+            printf(cls butcol "EXIT       Show Name" bot "Slower   Faster  Next" tabx0 taby3 whi "BMP Slideshow" del del);
             shown = 0;
+            shownames=0;
             brstate = s_waitshow;
             break;
 
@@ -346,13 +348,16 @@ char* browser(unsigned int action) {
             if (butpress & but1) if (showtime > 1000000 / ticktime) showtime -= (1000000 / ticktime);
             if (butpress & but2) if (showtime < 10000000 / ticktime) showtime += 1000000 / ticktime;
             if (butpress & (but2 | but1)) printf(bot tabx4 whi "%2d", showtime / (1000000 / ticktime));
+            if (butpress & but4) shownames^=1;
             if (!tick) break;
             showtimer += tick;
             if (showtimer < showtime) break;
-            printf(cls);
+         
             do {
-                printf(top grey "%s " whi, searchfile.filename);
+              
                 i = loadbmp(searchfile.filename, 2);
+                if(shownames) (printf(top grey "%s",searchfile.filename));
+                
                 if (i == 0) shown = 1; // found at least one good file
 
                 if (FindNext(&searchfile)) { // no more files

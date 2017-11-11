@@ -21,6 +21,7 @@ unsigned char butstate, butpress; // current button state, and button-changed fl
 signed int accx, accy, accz; //last accelerometer data
 
 unsigned char dispuart = 0; // where to send PRINTF/dispchar =0 for display, 1/2 for uart1/2
+unsigned char adcclaimed = 0; //=1 if someone is using the ADC so disable battery reads
 
 unsigned int avi_width, avi_height, avi_bpp; // AVI file size, colour depth
 unsigned int avi_frametime, avi_framelen; //  AVI frame period and bytes per frame

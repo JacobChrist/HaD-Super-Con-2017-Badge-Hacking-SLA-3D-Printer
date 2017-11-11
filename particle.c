@@ -7,7 +7,7 @@
 #define minpixsize 2
 
 #define minparts 100
-#define maxparts 1000 // these get divided by current pixel size
+#define maxparts 1024 // these get divided by current pixel size
 
 
 #define xmax (pxsize<<16) // limits of fixed-point coord values
@@ -48,13 +48,14 @@ typedef struct { // struct of particle data
 #define pixy p_y.sh[1]
 
 
-#define pixbufsize dispwidth*dispheight/(minpixsize*minpixsize)
+
 
 #define imagesize (dispwidth*dispheight)
-
+#define pixbufsize (imagesize/(minpixsize*minpixsize))
+#define imgbuf (cambuffer+pixbufsize)
 #define pixbuf cambuffer // overlay pixel buffer with cambuffer memory ( replaces parttype p[maxparts]; 
 // image buffer at cambuffer+pixbufsize
-parttype *p = (parttype*) & cambuffer[pixbufsize + imagesize]; // overlay particle list with cambuffer memory ( replaces parttype p[maxparts]; 
+parttype *p = (parttype*) &cambuffer[pixbufsize + imagesize]; // overlay particle list with cambuffer memory ( replaces parttype p[maxparts]; 
 
 #if (maxparts/minpixsize)*5*4+pixbufsize+imagesize>cambufsize 
 #error too many particles
@@ -82,25 +83,30 @@ char* particle(unsigned int action) {
 
     unsigned int c, d;
     static int masstable[8];
+  
 
     if (action == act_name) return ("PARTICLE");
-    else if (action == act_help) return ("Accelerometer demo");
+    else if (action == act_help) return ("Particle toy");
 
     if (action == act_start) {
         start = 1;
-        printf(top butcol "EXIT             Edit" taby1 tabx17 "Mode" bot "Poke     #Parts  Size" del del cls);
+           
+        printf(top butcol "EXIT             Edit" taby1 tabx17 "Mode" bot "Poke     #Parts  Size" );
+        printf(del del cls);
     }
 
     if (action != act_poll) return (0);
 
     if (start) { // initialise
+       
         editmode = 0;
         editsize = 1;
         framecnt = 0;
         srand(accx + accy + accz); // seed accelerometer
+        mplotblock(0, 0, 128, 128, 0,imgbuf );//ensure borders clear from memory leftovers
         switch (start) {
             case 1:
-                pixsize = randnum(minpixsize, maxpixsize); // 
+                pixsize = minpixsize+1;
                 nparts = randnum(minparts / pixsize, maxparts / pixsize); // fewer bigger pixels
                 for (i = 0; i != pxsize * pysize; i++) pixbuf[i] = 0; //clear obstacles & pixels
 
@@ -230,10 +236,11 @@ char* particle(unsigned int action) {
     }
 
     // draw new pixel buffer. 
-
+     
+ 
     for (i = 0, yy = 0; yy != pysize; yy++)
         for (xx = 0; xx != pxsize; xx++)
-            mplotblock(xx * pixsize + 4, yy * pixsize + 4, pixsize, pixsize, pixbuf[i++], cambuffer + pixbufsize);
+            mplotblock(xx * pixsize + 4, yy * pixsize + 4, pixsize, pixsize, pixbuf[i++], imgbuf);
 
     // plot accelerometer bars
     i = 64 + accx / 256;
@@ -242,8 +249,8 @@ char* particle(unsigned int action) {
         j = i;
         i = 64;
     }
-    mplotblock(0, 126, 128, 2, 0, cambuffer + pixbufsize);
-    mplotblock(i, 126, j - i + 1, 2, 0xfe, cambuffer + pixbufsize);
+    mplotblock(0, 126, 128, 2, 0, imgbuf);
+    mplotblock(i, 126, j - i + 1, 2, 0xfe, imgbuf);
 
     i = 64 - accy / 256;
     j = 64;
@@ -251,13 +258,13 @@ char* particle(unsigned int action) {
         j = i;
         i = 64;
     }
-    mplotblock(0, 0, 2, 128, 0, cambuffer + pixbufsize);
-    mplotblock(0, i, 2, j - i + 1, 0xfe, cambuffer + pixbufsize);
+    mplotblock(0, 0, 2, 128, 0,imgbuf );
+    mplotblock(0, i, 2, j - i + 1, 0xfe, imgbuf);
     //fizz bar
-    mplotblock(126, 0, 2, 128, 0, cambuffer + pixbufsize);
+    mplotblock(126, 0, 2, 128, 0, imgbuf);
     if (!editmode) {
         i = stillcount * 128 / (maxfizz - stillthresh);
-        if (stillcount > stillthresh) mplotblock(126, 127 - i, 2, i, 1, cambuffer + pixbufsize);
+        if (stillcount > stillthresh) mplotblock(126, 127 - i, 2, i, 1, imgbuf);
     }
 #define edthr 256
     if (editmode) {
@@ -291,7 +298,7 @@ char* particle(unsigned int action) {
         for (i = 0; i != 8; i++) palette[i] = primarycol[i + 8]; // dim particles
         palette[0xff] = c_whi; // obstacles
         //edit cursor 
-        mplotblock((edx >> 8) * pixsize + 4, (edy >> 8) * pixsize + 4, pixsize * (editsize + 1), pixsize * (editsize + 1), (framecnt & 2) ? 0x80 : 0xff, cambuffer + pixbufsize);
+        mplotblock((edx >> 8) * pixsize + 4, (edy >> 8) * pixsize + 4, pixsize * (editsize + 1), pixsize * (editsize + 1), (framecnt & 2) ? 0x80 : 0xff, imgbuf);
 
 
 
@@ -301,7 +308,7 @@ char* particle(unsigned int action) {
         palette[0xff] = c_grey; // obstacles
     }
     palette[0xfe] = c_whi; // accel bars
-    dispimage(0, 0, 128, 128, img_mono, cambuffer + pixbufsize);
+   dispimage(0, 0, 128, 128, img_mono, imgbuf);
     ++framecnt;
     return (0);
 

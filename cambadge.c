@@ -62,6 +62,8 @@ void main(void) {
     unsigned int powerbuttimer = 0, mounttimer = 0; // power button-down timer, auto poweroff timer, card detect debounce timer
     unsigned int y, scroll, appnum = 0; // menu display
 
+    
+    
     inithardware();
     setupints();
     readbuttons();
@@ -268,34 +270,39 @@ void main(void) {
                 printf(cls);
                 if (butstate & powerbut) break; // wait til button release
                 // will not normally be seen, but will if power override link is fitted
-                printf(cls taby4 blu "Awaiting Powerdown" bot "Reset");
+                printf(cls taby4 grey "Awaiting Powerdown\n\n Button 5:reset");
                 cam_enable(cammode_off);
+                
+                
                 led1_off;
                 for (i = 0; i != napps; apps[i++](act_powerdown)); // let apps do hardware de-init
                 state = s_powerdownwait;
                 break;
 
             case s_powerdownwait:
+                /// issue found on some badges is that when PIC goes into reset, pin leakage from RA4 turns supply backon
+                // ideal fix would be to reduce R8, but need to do it in software...
+                // method is to PWM power control to reduce supply & discharge capacitance for a while before finally turning off, so 
+                // insufficient energy left to power-up again
+                delayus(200000);// wait till effect of button via D28 is gone
+                 __builtin_disable_interrupts();
 
+                for(i=0;i!=1000;i++){
+                  powercon_on;
+                  delayus(100);
+                  powercon_off;
+                  delayus(100);
+                  kickwatchdog;
+                }
                 powercon_off;
-                if (butpress & but1) { // soft reset - only if power override link fitted
-
-                    __builtin_disable_interrupts();
-                    
-                     __pic32_software_reset() ;
-                    /*
-                     SYSKEY = 0x00000000; //write invalid key to force lock
-                    SYSKEY = 0xAA996655; //write key1 to SYSKEY
-                    SYSKEY = 0x556699AA; //write key2 to SYSKEY
-                    /* set SWRST bit to arm reset */
-                   // RSWRSTSET = 1;
-                    /* read RSWRST register to trigger reset */
-                  //  if (RSWRST);
-                    /* prevent any unwanted code execution until reset occurs*/
-                   
+           
+                do { // only gets here if power-bypass link set
+                    kickwatchdog;
+          
+                   if(PORTAbits.RA9)__pic32_software_reset();
+                } 
                     while (1);
 
-                }
                 break;
 
             default: state = s_startup;

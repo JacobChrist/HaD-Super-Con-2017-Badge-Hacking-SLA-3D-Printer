@@ -132,18 +132,20 @@ oled_cd_lo;
 
 void mplotblock(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned int colour, unsigned char* imgaddr) {
     // plot block in memory buffer for subsequent display using dispimage, 8bpp only.
-    // speeds up displays of lots of pixels. Note no bounds checking so will BSOD with bad inputs
+    // speeds up displays of lots of pixels.
     
     unsigned int xx, yy, gap;
-
+  
     gap = dispwidth - width;
     imgaddr += (y * dispwidth + x);
-
+    
+    if(((x+width)>dispwidth) || ((y+height)>dispheight)) return;
+    
     for (yy = 0; yy != height; yy++) {
         for (xx = 0; xx != width; xx++) *imgaddr++ = (unsigned char) colour;
         imgaddr += gap;
     }
-
+   
 
 }
 
@@ -254,7 +256,9 @@ void dispchar(unsigned char c) {// display 1 character, do control characters
         case 3: // half space
             dispx += charwidth / 2;
             break;
-
+        case 4: // short backspace
+            dispx -=3;
+            break;
         case 7:
             x = fgcol;
             fgcol = bgcol;

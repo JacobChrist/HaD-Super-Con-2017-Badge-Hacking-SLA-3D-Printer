@@ -111,6 +111,8 @@ extern unsigned short fgcol, bgcol; // foreground and background colours , RGB56
 extern unsigned char dispuart; // flag to divert printf output to UART2 for debugging 0 = normal, 1 = UART 1, 2 = UART 2
 // set bit 4 to output to serial and screen
 
+unsigned char adcclaimed; //=1 if someone is using the ADC so disable battery reads
+
 // video /bmp file parameters used by stuff in fileformats.c
 
 extern unsigned int avi_width, avi_height, avi_bpp; // width,height in pixels, bytes per pixel (1,2 supported for record, 1,2,3 for playback)
@@ -197,6 +199,8 @@ void cam_grabenable(unsigned int opt, unsigned int bufoffset, unsigned int cambu
 
 void conv16_24(unsigned int npixels, unsigned int offset);
 // convert image at cambuffer[offset] from RGB565 to RGB888
+
+void claimadc(unsigned char claim); // call with 1 to claim use of ADC, disables battery read. Call with 0 to release
 
 //________________________________________________________________________________________ macros 
 

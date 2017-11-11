@@ -2,7 +2,7 @@
 #include "cambadge.h"
 #include "globals.h"
 #include <sys/kmem.h> // for KVA_TO_PA macro for DMA logical-physical address translation
-#include <sys/attribs.h> // Interrupt vector constants 
+
 
 //_________________________________________________________  Everything to do with interrupts
 
