@@ -9,50 +9,52 @@
 #if serialcontrol==1
 
 unsigned int camoptions;
-#define RX_BUFFER_SIZE 20
-char rx_buffer[RX_BUFFER_SIZE];
-unsigned char rx_inqueue_index = 0;
-unsigned char rx_dequeue_index = 0;
-void rx_inqueue(unsigned char c) {
-	rx_buffer[rx_inqueue_index++] = c;
-	if( rx_inqueue_index >= RX_BUFFER_SIZE )
-		rx_inqueue_index = 0;
-}
-unsigned char rx_dequeue(void) {
-	unsigned char c;
-	c = rx_buffer[rx_dequeue_index++];
-	if( rx_dequeue_index >= RX_BUFFER_SIZE )
-		rx_dequeue_index = 0;
-	return c;
-}
-unsigned char rx_queue_size(void) {
-	unsigned char size;
-	if( rx_inqueue_index >= rx_dequeue_index ) {
-		size = rx_inqueue_index - rx_dequeue_index;
-	}
-	else {
-		size = (RX_BUFFER_SIZE + rx_inqueue_index) - rx_dequeue_index;
-	}
-	return size;
-}
-unsigned char line_found(char *command_buffer, unsigned char command_size ) {
-	// returns 1 (true) when a line is found
-	// returns 0 (false) if a line has not been found
-	static unsigned char command_index = 0;
-	char c;
-	while( rx_queue_size() > 0 ) {
-		c = rx_dequeue();
-		if( (c != '\r') && (command_index < (command_size - 1))) {
-			command_buffer[command_index] = c;
-			command_buffer[++command_index] = 0;
-		}
-		else {
-			command_index = 0;
-			return 1;
-		}
-	}
-	return 0;
-}
+//#define RX_BUFFER_SIZE 20
+//#define COMMAND_BUFFER_SIZE 30
+//char command_buff[RX_BUFFER_SIZE];
+//char rx_buffer[RX_BUFFER_SIZE];
+//unsigned char rx_inqueue_index = 0;
+//unsigned char rx_dequeue_index = 0;
+//void rx_inqueue(unsigned char c) {
+//	rx_buffer[rx_inqueue_index++] = c;
+//	if( rx_inqueue_index >= RX_BUFFER_SIZE )
+//		rx_inqueue_index = 0;
+//}
+//unsigned char rx_dequeue(void) {
+//	unsigned char c;
+//	c = rx_buffer[rx_dequeue_index++];
+//	if( rx_dequeue_index >= RX_BUFFER_SIZE )
+//		rx_dequeue_index = 0;
+//	return c;
+//}
+//unsigned char rx_queue_size(void) {
+//	unsigned char size;
+//	if( rx_inqueue_index >= rx_dequeue_index ) {
+//		size = rx_inqueue_index - rx_dequeue_index;
+//	}
+//	else {
+//		size = (RX_BUFFER_SIZE + rx_inqueue_index) - rx_dequeue_index;
+//	}
+//	return size;
+//}
+//unsigned char line_found(char *command_buffer, unsigned char command_size ) {
+//	// returns 1 (true) when a line is found
+//	// returns 0 (false) if a line has not been found
+//	static unsigned char command_index = 0;
+//	char c;
+//	while( rx_queue_size() > 0 ) {
+//		c = rx_dequeue();
+//		if( (c != '\r') && (command_index < (command_size - 1))) {
+//			command_buffer[command_index] = c;
+//			command_buffer[++command_index] = 0;
+//		}
+//		else {
+//			command_index = 0;
+//			return 1;
+//		}
+//	}
+//	return 0;
+//}
 
 void polluart(void) { // check for serial commands. Slightly crude but simple
 

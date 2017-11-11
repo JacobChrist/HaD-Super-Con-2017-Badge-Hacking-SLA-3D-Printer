@@ -11,7 +11,7 @@ unsigned int cammax;
 
 #if serialcontrol==1
 volatile unsigned int rxptr = 0, rxtimer; //  UART2 receive pointer & framing timeout
-unsigned char rxbuf[rxbufsize]; // UART2 receive buffer
+volatile unsigned char rxbuf[rxbufsize]; // UART2 receive buffer
 #endif
 
 unsigned char dispx, dispy; // display cursor position ( pixels))
