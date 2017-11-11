@@ -72,10 +72,11 @@ char* sla_printer(unsigned int action) {
           //printf(cls inv "%s" inv del, brname);
 
           i = loadbmp(brname, 2);
+          //printf(inv "%s" inv del, brname);
 
           if (i) {
               printf(red "Error:\n%s" whi, avierrors[i]);
-              break;
+              //break;
           }
 
           brstate = s_slice_wait;
