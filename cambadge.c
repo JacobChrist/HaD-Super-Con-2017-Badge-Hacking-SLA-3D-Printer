@@ -147,14 +147,14 @@ void main(void) {
                 if (mounttimer == 0) state = s_restart; // card not present at startup, or card error
                 if (cardmounted) {
                     state = s_restart;
-                    if (!openavi("splash.avi")) { // splash vid present
-                        state = s_splashavi;
-                        break;
-                    }
-                    if (!loadbmp("splash.bmp", 2)) {
-                        state = s_waitsplash;
-                        break;
-                    }
+//                    if (!openavi("splash.avi")) { // splash vid present
+//                        state = s_splashavi;
+//                        break;
+//                    }
+//                    if (!loadbmp("splash.bmp", 2)) {
+//                        state = s_waitsplash;
+//                        break;
+//                    }
                 }
                 break;
 
