@@ -23,7 +23,7 @@
 #define powerbuttime 100 // length of power button press before powerdown, ticks
 #define reptime 25 // key auto repeat delay, 20ms ticks
 #define reprate 4 // auto repeat rate
-#define butcol yel // button legend colour cya
+#define butcol cya // button legend colour
 #define batthresh1 2800 // yellow bat thresh, mV
 #define batthresh2 2200 // red bat thresh, mV
 
