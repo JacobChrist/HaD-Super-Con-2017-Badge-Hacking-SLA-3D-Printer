@@ -116,7 +116,7 @@ char* sla_printer(unsigned int action) {
                 brstate = s_slice;
                 break;
             }
-            
+            u2txstring("/0 layer\r");
             break;
             
         case s_startbrowse:
