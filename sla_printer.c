@@ -34,6 +34,7 @@ char* sla_printer(unsigned int action) {
     static unsigned int brscroll, brsel, brlast, brnfiles, brendflag, showtime, showtimer, shown;
 
     static unsigned int slice = 0;
+    static unsigned int slice_timer = 0;
     
     static char brname[15];
     static unsigned int brattrs, brlen, brtime, brtype;
@@ -83,6 +84,14 @@ char* sla_printer(unsigned int action) {
           break;
             
         case s_slice_wait:
+            if(!tick) return(0);
+            //if(!tick) 
+            slice_timer++;
+            if( slice_timer > 100) {
+                brstate = s_slice;
+                slice_timer = 0;
+            }
+
             if (!butpress) break;
               if (butpress & (powerbut)) {
                   brstate = s_quitbrowse;
@@ -93,6 +102,7 @@ char* sla_printer(unsigned int action) {
                 brstate = s_slice;
                 break;
             }
+            
             break;
             
         case s_startbrowse:
