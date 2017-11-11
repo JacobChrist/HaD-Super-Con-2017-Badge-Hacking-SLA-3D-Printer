@@ -12,8 +12,9 @@
 #define app_9 scope
 #define app_10 settings
 #define app_11 demoapp
+#define app_12 sla_printer
 
-#define applist app_1,app_2, app_3,app_4,app_5,/*app_6,*/app_7,app_8,app_9,app_10,app_11
+#define applist app_1,app_2, app_3,app_4,app_5,/*app_6,*/app_7,app_8,app_9,app_10,app_11,app_12
 
 #define napps (sizeof(apps)/4)
 
@@ -30,4 +31,5 @@ char* app_8(unsigned int);
 char* app_9(unsigned int);
 char* app_10(unsigned int);
 char* app_11(unsigned int);
+char* app_12(unsigned int);
 
