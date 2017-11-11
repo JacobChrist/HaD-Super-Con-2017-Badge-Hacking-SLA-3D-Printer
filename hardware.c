@@ -298,6 +298,12 @@ void u2txbyte(unsigned int c) { // send byte to UART 2
     U2TXREG = c;
 }
 
+void u2txstring(unsigned char *c) { // send byte to UART 2
+	while( *c != 0 ){
+        u2txbyte( *(c++) );
+	}
+}
+
 void u2txword(unsigned int c) {
     u2txbyte(c);
     u2txbyte(c >> 8);
