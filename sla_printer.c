@@ -23,12 +23,18 @@
 #define s_nextshow 15
 #define s_quitshow 16
 
+#define s_slice 17
+#define s_slice_wait 18
+
+
 char* sla_printer(unsigned int action) {
     unsigned i, j, y;
 
     static unsigned int brstate = s_startbrowse;
     static unsigned int brscroll, brsel, brlast, brnfiles, brendflag, showtime, showtimer, shown;
 
+    static unsigned int slice = 0;
+    
     static char brname[15];
     static unsigned int brattrs, brlen, brtime, brtype;
 
@@ -47,9 +53,54 @@ char* sla_printer(unsigned int action) {
 #endif
     switch (brstate) {
 
+        case s_slice:
+          sprintf(brname, "jolly%d.bmp", slice);
+          slice +=9;
+          if( slice > 180 ) slice = 0;
+//          switch(slice) {
+//            case 0:
+//              strcpy(brname, "jolly0.bmp");
+//              slice++;
+//              break;
+//            default:
+//              strcpy(brname, "jolly45.bmp");
+//              slice = 0;
+//              break;
+//          }
+          // load the slice
+          //printf(cls);
+          //printf(cls inv "%s" inv del, brname);
+
+          i = loadbmp(brname, 2);
+
+          if (i) {
+              printf(red "Error:\n%s" whi, avierrors[i]);
+              break;
+          }
+
+          brstate = s_slice_wait;
+          break;
+            
+        case s_slice_wait:
+            if (!butpress) break;
+              if (butpress & (powerbut)) {
+                  brstate = s_quitbrowse;
+                  break;
+            } // exit
+
+            if (butpress & (but3 | but5)) { // but3 is the go button.
+                brstate = s_slice;
+                break;
+            }
+            break;
+            
         case s_startbrowse:
-            FSchdir("\\");
+            FSchdir("\\JACOB\\");
             brendflag = 0;
+            slice = 0;
+            brstate = s_slice;
+            break;
+            
         case s_newdir:
 
             brsel = 0;
@@ -128,7 +179,7 @@ char* sla_printer(unsigned int action) {
                 brstate = (brattrs & ATTR_DIRECTORY) ? s_startshow : s_infobrowse;
                 break;
             }
-            if (butpress & (but3 | but5)) {
+            if (butpress & (but3 | but5)) { // but3 is the go button.
                 if (brattrs & ATTR_DIRECTORY) {
                     FSchdir(brname);
                     brstate = s_newdir;
@@ -250,8 +301,6 @@ char* sla_printer(unsigned int action) {
                     break;
 
             } // switch brtype
-
-
 
             break;
 

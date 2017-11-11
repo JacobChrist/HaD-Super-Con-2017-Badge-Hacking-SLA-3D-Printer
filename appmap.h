@@ -1,7 +1,7 @@
 // maps app numbers to function name. Functions themselves take care of displayed names 
 
 // this list defines apps present and their order in menu
-#define app_1 camera
+#define app_12 camera
 #define app_2 browser
 #define app_3 particle
 #define app_4 tetrapuzz
@@ -12,7 +12,7 @@
 #define app_9 scope
 #define app_10 settings
 #define app_11 demoapp
-#define app_12 sla_printer
+#define app_1 sla_printer
 
 #define applist app_1,app_2, app_3,app_4,app_5,/*app_6,*/app_7,app_8,app_9,app_10,app_11,app_12
 
