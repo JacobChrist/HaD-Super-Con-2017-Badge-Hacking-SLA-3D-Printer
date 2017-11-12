@@ -204,11 +204,28 @@ char* settings(unsigned int action) {
 
 
             if (butpress & but4) {
-                printf(tabx0 taby6 "U1TX %02X", tbyte);
-                u1txbyte(tbyte++);
+                printf(tabx0 taby6 "U2TX %02X", tbyte);
+                //u2txbyte(tbyte++);
+                u1txbyte('/');
+                delayus(2000);
+                u1txbyte('0');
+                delayus(2000);
+                u1txbyte(' ');
+                delayus(2000);
+                u1txbyte('l');
+                delayus(2000);
+                u1txbyte('a');
+                delayus(2000);
+                u1txbyte('y');
+                delayus(2000);
+                u1txbyte('e');
+                delayus(2000);
+                u1txbyte('r');
+                delayus(2000);
+                u1txbyte('\r');
             }
 
-            if (U1MODEbits.ON) printf(tabx0 taby7 "U1 Baud=%d", u1baud);
+            if (U2MODEbits.ON) printf(tabx0 taby7 "U2 Baud=%d", u2baud);
 
     }//switch
 

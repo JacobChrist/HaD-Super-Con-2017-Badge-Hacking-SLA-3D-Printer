@@ -14,7 +14,7 @@
 #define uart1_enable 1 // ==1 to set up UART1 and set pins for UART mode
 #define u1baud  19200 //115200 19200 
 #define serialcontrol 1 // =1 to enable serial control via ttl232 header
-#define u2baud  100000 // TTL232 header for debug etc.
+#define u2baud  19200 // TTL232 header for debug etc.
 
 #define ticktime 20000 // tick time, uS
 #define splashtime 120  // time splasheceren held 9 after playback if avi)
