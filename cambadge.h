@@ -19,11 +19,16 @@
 #define ticktime 20000 // tick time, uS
 #define splashtime 120  // time splasheceren held 9 after playback if avi)
 #define accmovethresh 1000 // not-moving threshold for accelerometer
-#define powerdowntime 30000 // no-activity powerdown time, ticks
-#define powerbuttime 100 // length of power button press before powerdown, ticks
+#define powerdowntime 120000 // no-activity powerdown time, ticks
+#define powerbuttime 25 // length of power button press before powerdown, ticks
 #define reptime 25 // key auto repeat delay, 20ms ticks
 #define reprate 4 // auto repeat rate
-#define butcol cya // button legend colour
+#define butcol red // button legend colour
+#define menucol red
+#define startecol red // blu
+#define altwhicol red // whi
+#define helpcol red // yel
+#define batcol red // yel
 #define batthresh1 2800 // yellow bat thresh, mV
 #define batthresh2 2200 // red bat thresh, mV
 

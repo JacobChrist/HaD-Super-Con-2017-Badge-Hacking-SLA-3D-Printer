@@ -116,7 +116,7 @@ char* sla_printer(unsigned int action) {
             if(!tick) return(0);
             //if(!tick) 
             slice_timer++;
-            if( slice_timer > 1500) {
+            if( slice_timer > 250) { // 250 = 5s, 750 = 15s, 
                 printf(cls);
                 u1txstring("/0 layer\r");
                 brstate = s_slice_break;
@@ -140,7 +140,7 @@ char* sla_printer(unsigned int action) {
             if(!tick) return(0);
             //if(!tick) 
             slice_timer++;
-            if( slice_timer > 100) {
+            if( slice_timer > 300) {
                 brstate = s_slice;
                 slice_timer = 0;
             }

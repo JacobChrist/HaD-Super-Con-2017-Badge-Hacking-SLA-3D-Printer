@@ -76,7 +76,7 @@ void main(void) {
     IFS0SET = _IFS0_T4IF_MASK; // force initial timer tick for button read, battery level initialise 
     TMR4 = 0;
 
-    printf(cls blu "Starting" whi); // in case something crashes early
+    printf(cls startecol "Starting" altwhicol); // in case something crashes early
 
     // check for i2c jam issue from camera - shouldn't happen nowadays but useful as a quick diagnostic 
     I2C2CONbits.ON = 0;
@@ -160,7 +160,7 @@ void main(void) {
 
             case s_showstartup: // show startup button options
                 printf(cls butcol "           Selftest "uarr tabx0 taby9 tabx13 "Disable\n" tabx13 "Auto\nBootloader   Poweroff\n  "darr tabx19 " " darr);
-                printf(tabx0 taby2 whi inv "POWER-UP OPTIONS:"inv"\n\nHold button when\npowering on");
+                printf(tabx0 taby2 startecol inv "POWER-UP OPTIONS:"inv"\n\nHold button when\npowering on");
                 if (butstate & but3) {
                     dispowerdown = 1;
                     printf(tabx0 taby7 inv yel "Powerdown disabled");
@@ -197,22 +197,22 @@ void main(void) {
 
             case s_restartmenu:
   #if acceltype==accel_dh
-                printf(cls whi "Proto accel version" del);
+                printf(cls startecol "Proto accel version" del);
 #endif
                 led1_off;
                 dispuart = 0;
 
-                printf(whi cls version bot butcol "  " uarr "         " darr "      Go");
+                printf(startecol cls version bot butcol "  " uarr "         " darr "      Go");
 
 #if debug_dma==1
-                printf(top red inv "DEBUG_DMA ON" inv whi);
+                printf(top red inv "DEBUG_DMA ON" inv altwhicol);
 #endif
 
 #define maxy 7   // number of apps in menu  
             case s_showmenu:
-                if (napps > maxy && scroll + maxy < napps) printf(tabx18 taby8 whi "...");
-                else printf(tabx18 taby8 whi "   ");
-                printf(whi tabx0 taby2);
+                if (napps > maxy && scroll + maxy < napps) printf(tabx18 taby8 menucol "...");
+                else printf(tabx18 taby8 altwhicol "   ");
+                printf(altwhicol tabx0 taby2);
                 dispy -= 3; // vertically centre
                 y = 0;
 
@@ -221,12 +221,12 @@ void main(void) {
                         bgcol = fgcol; //invert
                         fgcol = c_blk;
                     } // currently selected
-                    printf("%-20s\n" whi, apps[y + scroll](act_name));
+                    printf("%-20s\n" altwhicol, apps[y + scroll](act_name));
                     y++;
                 } while (y < napps && (y < maxy));
 
                 plotblock(0, dispy, dispwidth, dispheight - dispy - charheight, 0); // clear help text area ( not using cls to avoid flicker of names and button legends)
-                printf(taby9 yel "%s", apps[appnum](act_help)); // help text
+                printf(taby9 helpcol "%s", apps[appnum](act_help)); // help text
               //  printf(taby7 tabx0  cya  "Please Update\nfirmware from card" );
                 state = s_waitmenu;
                 break;
@@ -234,10 +234,10 @@ void main(void) {
             case s_waitmenu: // wait for button press
                 if (!tick) break;
                 // following prints done every tick - not efficient but we've nothing else to do
-                printf(tabx12 taby0 whi);
+                printf(tabx12 taby0 altwhicol);
                 printf(cardmounted ? sdcd : " "); // SD card symbol
                 // display battery voltage
-                printf(battlevel > batthresh1 ? grn : battlevel < batthresh2 ? red : yel); //select colour
+                printf(battlevel > batthresh1 ? grn : battlevel < batthresh2 ? red : batcol); //select colour
                 printf(tabx13 taby0 bat "%c%d.%02dV", dispowerdown ? 0x60 : ' ', battlevel / 1000, (battlevel % 1000) / 10);
 
                 if (!butpress) break;
@@ -257,7 +257,7 @@ void main(void) {
                 break;
 
             case s_appstart:
-                printf(whi cls);
+                printf(altwhicol cls);
                 apps[appnum](act_start); // start application
                 state = s_apprun;
                 break;
