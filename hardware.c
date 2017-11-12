@@ -292,6 +292,11 @@ void u1txbyte(unsigned int c) {//Send byte to UART 1. Does not wait for completi
     U1TXREG = c;
 }
 
+void u1txstring(unsigned char *c) { // send byte to UART 2
+	while( *c != 0 ){
+        u1txbyte( *(c++) );
+	}
+}
 
 void u2txbyte(unsigned int c) { // send byte to UART 2
     while (U2STAbits.UTXBF);

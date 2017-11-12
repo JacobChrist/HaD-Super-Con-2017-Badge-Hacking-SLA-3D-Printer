@@ -58,6 +58,7 @@ char* sla_printer(unsigned int action) {
     switch (brstate) {
 
         case s_slice_start:
+//            slice_timer = 0;
           printf(cls red "\n\n\n\n\n" whi);
           printf(red "** PRESS BUTTON 1 **\n" whi);
           printf(red "** TO START PRINT **\n" whi);
@@ -103,7 +104,8 @@ char* sla_printer(unsigned int action) {
             //if(!tick) 
             slice_timer++;
             if( slice_timer > 100) {
-                u2txstring("/0 layer\r");
+                printf(cls);
+                u1txstring("/0 layer\r");
                 brstate = s_slice_break;
                 slice_timer = 0;
             }
