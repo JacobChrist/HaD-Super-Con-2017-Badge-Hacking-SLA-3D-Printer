@@ -25,8 +25,9 @@
 
 #define s_slice 17
 #define s_slice_wait 18
-#define s_slice_start 19
-#define s_slice_start_wait 20
+#define s_slice_break 19
+#define s_slice_start 20
+#define s_slice_start_wait 21
 
 
 char* sla_printer(unsigned int action) {
@@ -102,6 +103,28 @@ char* sla_printer(unsigned int action) {
             //if(!tick) 
             slice_timer++;
             if( slice_timer > 100) {
+                u2txstring("/0 layer\r");
+                brstate = s_slice_break;
+                slice_timer = 0;
+            }
+
+            if (!butpress) break;
+              if (butpress & (powerbut)) {
+                  brstate = s_quitbrowse;
+                  break;
+            } // exit
+
+            if (butpress & (but3 | but5)) { // but3 is the go button.
+                brstate = s_slice;
+                break;
+            }
+            break;
+            
+        case s_slice_break:
+            if(!tick) return(0);
+            //if(!tick) 
+            slice_timer++;
+            if( slice_timer > 100) {
                 brstate = s_slice;
                 slice_timer = 0;
             }
@@ -116,7 +139,6 @@ char* sla_printer(unsigned int action) {
                 brstate = s_slice;
                 break;
             }
-            u2txstring("/0 layer\r");
             break;
             
         case s_startbrowse:
